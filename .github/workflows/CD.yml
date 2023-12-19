@@ -9,6 +9,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -16,7 +19,6 @@ jobs:
 
       - name: Get version from file
         run: |
-          VERSION_FILE="$/helx/_version.py"
           HELX_VERSION="$(cat helx/_version.py | grep '__version__ = ' |  cut -d'=' -f2 | sed 's,\",,g' | sed "s,\',,g" | sed 's, ,,g')"
           echo "Current version is:"
           echo "$HELX_VERSION"
@@ -27,7 +29,6 @@ jobs:
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           output-file: false
           fallback-version: ${{ env.HELX_VERSION }}
           skip-commit: true
@@ -55,4 +56,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
-          password: ${{ secrets.PYPI_API_KEY }}

@@ -1,4 +1,4 @@
 wandb
-helx
-envx
-agentx
+helx-base
+helx-agents
+helx-envs
