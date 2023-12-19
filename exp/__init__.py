@@ -15,16 +15,6 @@
 # Make sure that the gym registry is populated
 # with exteral environments.
 from . import (
-    agents,
-    config,
-    environment,
     experiment,
-    image,
     logging,
-    mdp,
-    memory,
-    modules,
-    preprocess,
-    spaces,
-    losses
 )
