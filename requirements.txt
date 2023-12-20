@@ -21,3 +21,4 @@ minigrid
 procgen
 gymnax
 brax
+wandb
