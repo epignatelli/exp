@@ -1,37 +1,40 @@
+# HELX: The RL experiments framework
+
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![CI](https://github.com/epignatelli/helx/actions/workflows/CI.yml/badge.svg)](https://github.com/epignatelli/helx/actions/workflows/CI.yml)
 [![CD](https://github.com/epignatelli/helx/actions/workflows/CD.yml/badge.svg)](https://github.com/epignatelli/helx/actions/workflows/CD.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/epignatelli/helx?color=%23216477&label=Release)
 
-# Helx: Interoperating between Reinforcement Learning Experimental Protocols
+**[Quickstart](#what-is-helx)** | **[Installation](#installation)** | **[Examples](#examples)** | **[Cite](#cite)**
 
-Helx provides a single **interface** to:
+## What is HELX?
 
-**a.** interoperate between a variety of Reinforcement Learning (RL) environments and
-**b.** interact with them through a unified agent interface.
+HELX is a JAX-based ecosystem that provides a standardised framework to run Reinforcement Learning experiments.
+With HELX you easily can:
+- Use the `helx.envs` namespace to use the most common RL environments (gym, gymnax, dm_env, atari, ...)
+- Use the `helx.agents` namespace to use the most common RL agents (DQN, PPO, SAC, ...)
+- Use the `helx.experiment` namespace to run experiments on your local machine, on a cluster, or on the cloud
+- Use the `helx.base` namespace to access the most common RL data structures and functions (e.g., a Ring buffer)
 
-It is designed to be agnostic to both the environment library (e.g., `gym`, `dm_control`) and the agent library (e.g., `pytorch`, `jax`, `tensorflow`).
-
-Why using `helx`? It allows to easily switch between different RL libraries, and to easily test your agents on different environments.
+Each namespace provides a single, standardised interface to all agents, environments and experiment runners.
 
 ## Installation
+
+- ### Stable
+Install the stable version of `helx` and its dependencies with:
+```bash
+pip install helx
+```
+
+- ### Nightly
+Or, if you prefer to install the latest version from source:
 ```bash
 pip install git+https://github.com/epignatelli/helx
 ```
 
-If you also want to download the binaries for `mujoco`, both `gym` and `dm_control`, and `atari`:
-```bash
-helx-download-extras
-```
 
-And then tell the system where the mujoco binaries are:
-```bash
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/mujoco/lib
-export MJLIB_PATH=/path/to/home/.mujoco/mujoco210/bin/libmujoco210.so
-export MUJOCO_PY_MUJOCO_PATH=/path/to/home/.mujoco/mujoco210
-```
 
----
-## Example
+## Examples
 
 A typical use case is to design an agent, and toy-test it on `catch` before evaluating it on more complex environments, such as atari, procgen or mujoco.
 
@@ -80,46 +83,47 @@ agent = helx.agents.Random(hparams)
 helx.experiment.run(env, agent, episodes=100)
 ```
 
----
-## Supported libraries
 
-We currently support these external environment models:
-- [dm_env](https://github.com/deepmind/dm_env)
-- [bsuite](https://github.com/deepmind/bsuite)
-- [dm_control](https://github.com/deepmind/dm_control), including
-  - [Mujoco](https://mujoco.org)
-- [gym](https://github.com/openai/gym) and [gymnasium](https://github.com/Farama-Foundation/Gymnasium), including
-  - The [minigrid]() family
-  - The [minihack]() family
-  - The [atari](https://github.com/mgbellemare/Arcade-Learning-Environment) family
-  - The legacy [mujoco](https://www.roboti.us/download.html) family
-  - And the standard gym family
-- [gym3](https://github.com/openai/gym3), including
-  - [procgen](https://github.com/openai/procgen)
 
-#### On the road:
-- [gymnax](https://github.com/RobertTLange/gymnax)
-- [ivy_gym](https://github.com/unifyai/gym)
----
-## Adding a new agent (`helx.agents.Agent`)
+## Joining development
+
+### Adding a new agent (`helx.agents.Agent`)
 
 An `helx` agent interface is designed as the minimal set of functions necessary to *(i)* interact with an environment and *(ii)* reinforcement learn.
 
 ```python
-class Agent(ABC):
-    """A minimal RL agent interface."""
+from typing import Any
+from jax import Array
 
-    @abstractmethod
-    def sample_action(self, timestep: Timestep) -> Array:
+from helx.base import Timestep
+from helx.agents import Agent
+
+
+class NewAgent(helx.agents.Agent):
+    """A new RL agent."""
+    def create(self, hparams: Any) -> None:
+        """Initialises the agent's internal state (knowledge), such as a table,
+        or some function parameters, e.g., the parameters of a neural network."""
+        # implement me
+
+    def init(self, key: KeyArray, timestep: Timestep) -> None:
+        """Initialises the agent's internal state (knowledge), such as a table,
+        or some function parameters, e.g., the parameters of a neural network."""
+        # implement me
+
+    def sample_action(
+        self, agent_state: AgentState, obs: Array, *, key: KeyArray, eval: bool = False
+    ):
         """Applies the agent's policy to the current timestep to sample an action."""
+        # implement me
 
-    @abstractmethod
     def update(self, timestep: Timestep) -> Any:
         """Updates the agent's internal state (knowledge), such as a table,
         or some function parameters, e.g., the parameters of a neural network."""
+        # implement me
 ```
 
----
+
 ## Adding a new environment library (`helx.environment.Environment`)
 
 To add a new library requires three steps:
@@ -146,7 +150,7 @@ If you use `helx` please consider citing it as:
   }
 ```
 
----
+
 ## A note on maintainance
 This repository was born as the recipient of personal research code that was developed over the years.
 Its maintainance is limited by the time and the resources of a research project resourced with a single person.
