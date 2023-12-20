@@ -18,9 +18,9 @@ from jax import Array
 import jax.numpy as jnp
 import optax
 
-from ..mdp import Timestep
+from helx.base.mdp import Timestep, TERMINATION
+
 from .dqn import DQNHParams, DQNLog, DQNState, DQN
-from ..mdp import TERMINATION
 
 
 class DDQNHParams(DQNHParams):

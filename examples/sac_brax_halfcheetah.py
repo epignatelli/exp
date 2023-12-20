@@ -21,7 +21,7 @@ from absl import app, flags
 import helx
 import wandb
 
-helx.config.define_flags_from_hparams(helx.agents.SACHParams)
+helx.base.config.define_flags_from_hparams(helx.agents.SACHParams)
 FLAGS = flags.FLAGS
 
 
@@ -30,7 +30,7 @@ def main(argv):
 
     # environment
     env = brax.envs.get_environment("ant")  # [halfcheetah, humanoid, ant]
-    env = helx.environment.to_helx(env)
+    env = helx.envs.interop.to_helx(env)
 
     # optimiser
     optimiser = optax.adam(
@@ -38,7 +38,7 @@ def main(argv):
     )
 
     # agent
-    hparams = helx.config.hparams_from_flags(
+    hparams = helx.base.config.hparams_from_flags(
         helx.agents.SACDHParams,
         obs_space=env.observation_space,
         action_space=env.action_space,
@@ -47,14 +47,14 @@ def main(argv):
     )
     actor_backbone = nn.Sequential(
         [
-            helx.modules.Flatten(),
-            helx.modules.MLP(features=[32, 16]),
+            helx.base.modules.Flatten(),
+            helx.base.modules.MLP(features=[32, 16]),
         ]
     )
     critic_backbone = nn.Sequential(
         [
-            helx.modules.Flatten(),
-            helx.modules.MLP(features=[32, 16]),
+            helx.base.modules.Flatten(),
+            helx.base.modules.MLP(features=[32, 16]),
         ]
     )
     agent = helx.agents.SAC.create(

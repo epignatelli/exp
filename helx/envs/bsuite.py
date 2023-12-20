@@ -23,8 +23,8 @@ from jax import Array
 from jax.random import KeyArray
 import jax.numpy as jnp
 
-from ..mdp import Timestep
-from ..spaces import Space, Discrete, Continuous
+from helx.base.mdp import Timestep
+from helx.base.spaces import Space, Discrete, Continuous
 from .environment import EnvironmentWrapper
 from .dm_env import timestep_to_helx
 

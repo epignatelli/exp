@@ -21,7 +21,7 @@ from absl import app, flags
 import helx
 import wandb
 
-helx.config.define_flags_from_hparams(helx.agents.DQNHParams)
+helx.base.config.define_flags_from_hparams(helx.agents.DQNHParams)
 FLAGS = flags.FLAGS
 
 
@@ -30,7 +30,7 @@ def main(argv):
 
     # environment
     env = bsuite.load_from_id("catch/0")
-    env = helx.environment.to_helx(env)
+    env = helx.envs.interop.to_helx(env)
 
     # optimiser
     optimiser = optax.rmsprop(
@@ -41,7 +41,7 @@ def main(argv):
     )
 
     # agent
-    hparams = helx.config.hparams_from_flags(
+    hparams = helx.base.config.hparams_from_flags(
         helx.agents.DQNHParams,
         obs_space=env.observation_space,
         action_space=env.action_space,
@@ -51,8 +51,8 @@ def main(argv):
 
     backbone = nn.Sequential(
         [
-            helx.modules.Flatten(),
-            helx.modules.MLP(features=[32, 16]),
+            helx.base.modules.Flatten(),
+            helx.base.modules.MLP(features=[32, 16]),
         ]
     )
     agent = helx.agents.DQN.create(

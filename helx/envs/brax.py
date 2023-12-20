@@ -18,8 +18,8 @@ import jax.numpy as jnp
 import brax.envs
 from jax.random import KeyArray
 
-from ..spaces import MAX_INT_ARR, Continuous
-from ..mdp import Timestep, TRANSITION, TERMINATION
+from helx.base.spaces import MAX_INT_ARR, Continuous
+from helx.base.mdp import Timestep, TRANSITION, TERMINATION
 from .environment import EnvironmentWrapper
 
 

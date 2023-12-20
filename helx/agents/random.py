@@ -13,14 +13,12 @@
 # limitations under the License.
 from __future__ import annotations
 
-from typing import Any, Tuple
-
 import jax
 import jax.numpy as jnp
 from chex import Array
 
 from .agent import Agent, HParams
-from ..mdp import Timestep
+from helx.base.mdp import Timestep
 
 
 class Random(Agent):

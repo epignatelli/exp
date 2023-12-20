@@ -18,10 +18,9 @@ import jax.numpy as jnp
 import optax
 from flax import struct
 import flax.linen as nn
-import jax.tree_util as jtu
 
 from .dqn import DQNHParams, DQNLog, DQNState, DQN
-from ..modules import Split, Merge, Parallel
+from helx.base.modules import Split, Merge, Parallel
 
 
 class DuelingDQNHParams(DQNHParams):

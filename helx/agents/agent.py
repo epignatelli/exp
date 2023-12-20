@@ -20,8 +20,8 @@ import jax.numpy as jnp
 from flax import struct
 from optax import GradientTransformation, OptState
 
-from ..spaces import Space
-from ..mdp import Timestep, TRANSITION
+from helx.base.spaces import Space
+from helx.base.mdp import Timestep, TRANSITION
 
 
 class HParams(struct.PyTreeNode):
@@ -59,7 +59,7 @@ class Agent(struct.PyTreeNode):
     @abstractmethod
     def sample_action(
         self, agent_state: AgentState, obs: Array, *, key: KeyArray, eval: bool = False
-    ):
+    ) -> Array:
         raise NotImplementedError
 
     @abstractmethod
