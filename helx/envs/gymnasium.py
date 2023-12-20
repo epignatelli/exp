@@ -25,8 +25,8 @@ import numpy as np
 from gymnasium.utils.step_api_compatibility import (
     TerminatedTruncatedStepType as GymnasiumTimestep,
 )
-from ..mdp import Timestep, TRANSITION, TERMINATION, TRUNCATION
-from ..spaces import Continuous, Discrete, Space
+from helx.base.mdp import Timestep, TRANSITION, TERMINATION, TRUNCATION
+from helx.base.spaces import Continuous, Discrete, Space
 from .environment import EnvironmentWrapper
 
 

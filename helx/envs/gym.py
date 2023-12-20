@@ -27,8 +27,8 @@ from jax.random import KeyArray
 import numpy as np
 from gym.utils.step_api_compatibility import TerminatedTruncatedStepType as GymTimestep
 
-from ..mdp import Timestep, TERMINATION, TRANSITION, TRUNCATION
-from ..spaces import Continuous, Discrete, Space
+from helx.base.mdp import Timestep, TERMINATION, TRANSITION, TRUNCATION
+from helx.base.spaces import Continuous, Discrete, Space
 from .environment import EnvironmentWrapper
 
 

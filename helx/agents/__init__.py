@@ -17,5 +17,5 @@ from .agent import Agent, HParams, Log, AgentState
 from .dqn import DQN, DQNHParams, DQNLog, DQNState
 from .ddqn import DDQN, DDQNHParams, DDQNLog, DDQNState
 from .dueling_dqn import DuelingDQN, DuelingDQNHParams, DuelingDQNLog, DuelingDQNState
-from .sac import SAC, SACHParams, SACLog, SACState
-from .sacd import SACD, SACDHParams
+# from .sac import SAC, SACHParams, SACLog, SACState
+# from .sacd import SACD, SACDHParams

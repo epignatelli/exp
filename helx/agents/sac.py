@@ -31,11 +31,12 @@ from jax.random import KeyArray
 from optax import GradientTransformation
 import rlax
 
-from ..modules import Lambda, Parallel, Split, Temperature
-from ..mdp import Timestep, TERMINATION
-from ..memory import ReplayBuffer
-from ..spaces import Continuous
-from .. import losses
+from helx.base.modules import Lambda, Parallel, Split, Temperature
+from helx.base.mdp import Timestep, TERMINATION
+from helx.base.memory import ReplayBuffer
+from helx.base.spaces import Continuous
+from helx.base import losses
+
 from .agent import Agent, AgentState, HParams, Log
 
 
@@ -119,7 +120,7 @@ class SAC(Agent):
                 actor_backbone,
                 Split(2),
                 Parallel((nn.Dense(action_size), nn.Dense(action_size))),
-                Parallel((reshape, jtu.tree_map(lambda x: x, reshape)))
+                Parallel((reshape, jtu.tree_map(lambda x: x, reshape))),
             ]
         )
         critic = nn.Sequential([critic_backbone, nn.Dense(1)])
@@ -153,9 +154,7 @@ class SAC(Agent):
         )
         opt_state = self.optimiser.init(params)
         buffer = ReplayBuffer.create(
-            timestep,
-            self.hparams.replay_memory_size,
-            self.hparams.n_steps
+            timestep, self.hparams.replay_memory_size, self.hparams.n_steps
         )
         return SACState(
             iteration=jnp.asarray(0),
@@ -173,7 +172,9 @@ class SAC(Agent):
         # SAC uses a tanh squashing function
         # see https://arxiv.org/pdf/1801.01290.pdf, Appendix C.
         # and https://github.com/openai/spinningup/blob/master/spinup/algos/pytorch/sac/core.py#L29
-        policy = distrax.Transformed(distrax.Normal(mu, jnp.exp(logvar)), distrax.Tanh())
+        policy = distrax.Transformed(
+            distrax.Normal(mu, jnp.exp(logvar)), distrax.Tanh()
+        )
         action = policy.sample(seed=key)
         return action
 
@@ -198,12 +199,18 @@ class SAC(Agent):
         alpha = jax.lax.stop_gradient(temperature)
 
         # actor
-        mu_tm1, logvar_tm1 = jtu.tree_map(jnp.asarray, self.actor.apply(params_actor, s_tm1))
-        policy_tm1 = distrax.Transformed(distrax.Normal(mu_tm1, jnp.exp(logvar_tm1)), distrax.Tanh())
+        mu_tm1, logvar_tm1 = jtu.tree_map(
+            jnp.asarray, self.actor.apply(params_actor, s_tm1)
+        )
+        policy_tm1 = distrax.Transformed(
+            distrax.Normal(mu_tm1, jnp.exp(logvar_tm1)), distrax.Tanh()
+        )
         a_tm1, logprobs_a_tm1 = policy_tm1.sample_and_log_prob(seed=k1)
 
         mu_t, logvar_t = jtu.tree_map(jnp.asarray, self.actor.apply(params_actor, s_t))
-        policy_t = distrax.Transformed(distrax.Normal(mu_t, jnp.exp(logvar_t)), distrax.Tanh())
+        policy_t = distrax.Transformed(
+            distrax.Normal(mu_t, jnp.exp(logvar_t)), distrax.Tanh()
+        )
         a_t, logprobs_a_t = policy_t.sample_and_log_prob(seed=k1)
 
         # critic
@@ -211,8 +218,12 @@ class SAC(Agent):
         qA_t, qB_t = jtu.tree_map(jnp.asarray, self.critic.apply(params_critic, s_t))
         q_target = jnp.min(jnp.asarray([qA_t, qB_t]), axis=0)
         critic_loss = losses.double_dqn_loss(
-            timesteps, self.critic, params_critic, params_critic_target, self.hparams.discount
-            )
+            timesteps,
+            self.critic,
+            params_critic,
+            params_critic_target,
+            self.hparams.discount,
+        )
 
         # augment reward with policy entropy
         policy_entropy = -jnp.sum(probs_a_tm1 * logprobs_a_tm1, axis=-1)
@@ -222,7 +233,13 @@ class SAC(Agent):
         qA_t, qB_t = self.critic.apply(params_critic, s_t)
         q_target = jnp.min(jnp.asarray([qA_t, qB_t]), axis=0)
         v_t = q_target - alpha * logprobs_a_t
-        rlax.double_q_learning(q_tm1, a_tm1, r_t, discount_t, q_target,)
+        rlax.double_q_learning(
+            q_tm1,
+            a_tm1,
+            r_t,
+            discount_t,
+            q_target,
+        )
 
         qA_tm1, qB_tm1 = jnp.asarray(qA_tm1), jnp.asarray(qB_tm1)
         qA_t, qB_t = jnp.asarray(qA_t), jnp.asarray(qB_t)

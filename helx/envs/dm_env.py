@@ -22,8 +22,8 @@ import jax
 import jax.numpy as jnp
 from jax.random import KeyArray
 
-from ..mdp import Timestep, TERMINATION, TRANSITION, TRUNCATION
-from ..spaces import Space, Discrete, Continuous
+from helx.base.mdp import Timestep, TERMINATION, TRANSITION, TRUNCATION
+from helx.base.spaces import Space, Discrete, Continuous
 from .environment import EnvironmentWrapper
 
 

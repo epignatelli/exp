@@ -24,8 +24,9 @@ from gymnax.environments.environment import EnvParams
 from gymnax.environments.spaces import Space as GymnaxSpace, gymnax_space_to_gym_space
 from jax.random import KeyArray
 
-from ..spaces import Space, Continuous
-from ..mdp import Timestep, TRANSITION, TERMINATION, TRUNCATION
+from helx.base.spaces import Space, Continuous
+from helx.base.mdp import Timestep, TRANSITION, TERMINATION, TRUNCATION
+
 from .environment import EnvironmentWrapper
 from .gym import to_helx as gym_to_helx
 

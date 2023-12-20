@@ -19,8 +19,8 @@ import jax.numpy as jnp
 import navix as nx
 from jax.random import KeyArray
 
-from ..spaces import Continuous, Discrete, Space
-from ..mdp import TRANSITION, Timestep
+from helx.base.spaces import Continuous, Discrete, Space
+from helx.base.mdp import TRANSITION, Timestep
 from .environment import EnvironmentWrapper
 
 

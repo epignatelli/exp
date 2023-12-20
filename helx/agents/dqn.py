@@ -26,11 +26,11 @@ from jax import Array
 from jax.random import KeyArray
 from optax import GradientTransformation
 
-from ..mdp import TERMINATION, Timestep
-from ..memory import ReplayBuffer
-from ..spaces import Discrete
+from helx.base.mdp import TERMINATION, Timestep
+from helx.base.memory import ReplayBuffer
+from helx.base.spaces import Discrete
+from helx.base import losses
 from .agent import Agent, HParams, Log, AgentState
-from .. import losses
 
 
 class DQNHParams(HParams):
@@ -152,6 +152,7 @@ class DQN(Agent):
         td_error = rlax.q_learning(
             q_tm1, a_tm1, r_t, discount_t, q_t, stop_target_gradients=True
         )
+        td_error = jnp.asarray(td_error)
         td_loss = jnp.mean(0.5 * td_error**2)
         return td_loss
 

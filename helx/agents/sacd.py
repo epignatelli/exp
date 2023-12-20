@@ -24,9 +24,10 @@ from flax.core.scope import VariableDict as Params
 from jax import Array
 from jax.random import KeyArray
 
-from ..modules import Temperature, Split, Parallel
-from ..mdp import Timestep, TERMINATION
-from ..spaces import Discrete
+from helx.base.modules import Temperature, Split, Parallel
+from helx.base.mdp import Timestep, TERMINATION
+from helx.base.spaces import Discrete
+
 from .sac import SAC, SACHParams, SACState
 
 
