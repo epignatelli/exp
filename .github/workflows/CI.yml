@@ -7,6 +7,9 @@ on:
 jobs:
   Test:
     runs-on: ${{ matrix.os }}-latest
+    permissions:
+      contents: read
+      packages: write
     defaults:
       run:
         shell: bash -l {0}
@@ -43,6 +46,10 @@ jobs:
 
   Compliance:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v3
       with:
