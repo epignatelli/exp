@@ -19,7 +19,7 @@ import wandb
 
 from helx.base.mdp import Timestep, TRANSITION
 from helx.agents import Agent, AgentState
-from helx.helx.envs.environment import Environment
+from helx.envs.environment import Environment
 
 from .logging import host_log_wandb, report
 

@@ -17,5 +17,11 @@
 
 from . import (
     logging,
-    running,
+)
+
+from .running import (
+    run,
+    jrun,
+    run_episode,
+    run_n_steps
 )
