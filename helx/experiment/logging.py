@@ -9,8 +9,8 @@ import jax.numpy as jnp
 import jax.experimental.host_callback as hcb
 import flax.linen as nn
 
-from .agents.agent import Log
-from .mdp import TRANSITION
+from helx.agents import Log
+from helx.base.mdp import TRANSITION
 
 
 T = TypeVar("T", bound=nn.Module)

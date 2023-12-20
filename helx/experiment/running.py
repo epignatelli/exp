@@ -17,10 +17,10 @@ from jax.random import KeyArray
 import jax.numpy as jnp
 import wandb
 
-from .environment.environment import Environment
-from .agents.agent import AgentState
-from .mdp import Timestep, TRANSITION
-from .agents import Agent
+from helx.base.mdp import Timestep, TRANSITION
+from helx.agents import Agent, AgentState
+from helx.helx.envs.environment import Environment
+
 from .logging import host_log_wandb, report
 
 
